@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "types.h"
+#include "messages.h"
 
 instruction parseInstruction(int);
 void executeInstruction(computer*);
@@ -17,7 +18,7 @@ void opEqualTo(computer*, instruction);
 
 int resolveParamValue(computer*, int, int);
 
-int runProgram(computer* comp) {
+void runProgram(computer* comp) {
     comp->running = 1;
 
     while (comp->running == 1) {
@@ -28,8 +29,6 @@ int runProgram(computer* comp) {
             exit(1);
         }
     }
-
-    return comp->output;
 }
 
 instruction parseInstruction(int memValue) {
@@ -135,7 +134,7 @@ void opOutput(computer* comp, instruction inst) {
     int firstParam = resolveParamValue(comp, ip+1, inst.paramAMode);
 
     printf("output at address %d: %d\n", ip, firstParam);
-    comp->output = firstParam;
+    pushMessage(&(comp->output), firstParam);
     comp->instructionPointer += 2;
 }
 

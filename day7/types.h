@@ -1,13 +1,19 @@
 #ifndef types_h
 #define types_h
 
+#define message struct message
+message {
+    int value;
+    message* next;
+};
+
 #define computer struct computer
 computer {
     int* memory;
     int memorySize;
     int instructionPointer;
-    int output;
     int* input;
+    message* output;
     int inputPointer;
     int running;
 };

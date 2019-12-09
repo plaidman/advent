@@ -5,6 +5,7 @@
 #include "types.h"
 #include "bootup.h"
 #include "process.h"
+#include "messages.h"
 
 void stringify(int, char*);
 int validate(char*);
@@ -41,7 +42,8 @@ int main(int argc, char const *argv[]) {
             comps[j]->input[0] = phases[j];
             comps[j]->input[1] = signal;
 
-            signal = runProgram(comps[j]);
+            runProgram(comps[j]);
+            signal = popMessage(&(comps[j]->output));
         }
 
         if (signal > largest) {

@@ -18,6 +18,7 @@ computer* bootup(char* filename) {
     comp->inputPointer = -1;
     comp->instructionPointer = 0;
     comp->running = 0;
+    comp->output = NULL;
 
     return comp;
 }

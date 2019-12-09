@@ -3,6 +3,6 @@
 
 #include "types.h"
 
-int runProgram(computer*);
+void runProgram(computer*);
 
 #endif
