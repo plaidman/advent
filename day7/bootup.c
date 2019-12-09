@@ -15,10 +15,10 @@ computer* bootup(char* filename) {
     comp->memorySize = countMemory(pageFile);
     comp->memory = populateMemory(pageFile, comp->memorySize);
 
-    comp->inputPointer = -1;
     comp->instructionPointer = 0;
     comp->running = 0;
     comp->output = NULL;
+    comp->input = NULL;
 
     return comp;
 }

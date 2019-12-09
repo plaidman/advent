@@ -121,8 +121,7 @@ void opInput(computer* comp, instruction inst) {
     int ip = comp->instructionPointer;
     int storeAddress = comp->memory[ip+1];
 
-    int value = comp->input[comp->inputPointer];
-    comp->inputPointer++;
+    int value = popMessage(&(comp->input));
 
     printf("input at address %d: %d\n", ip, value);
     comp->memory[storeAddress] = value;

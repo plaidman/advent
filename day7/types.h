@@ -12,9 +12,8 @@ computer {
     int* memory;
     int memorySize;
     int instructionPointer;
-    int* input;
+    message* input;
     message* output;
-    int inputPointer;
     int running;
 };
 

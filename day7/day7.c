@@ -18,7 +18,6 @@ int main(int argc, char const *argv[]) {
 
     for (int i = 0; i < 5; i++) {
         comps[i] = bootup("input.txt");
-        comps[i]->input = malloc(sizeof(int) * 2);
     }
 
     int largest = 0;
@@ -36,11 +35,12 @@ int main(int argc, char const *argv[]) {
         }
         split(phaseString, phases);
 
+        printf("phases %s\n", phaseString);
+
         int signal = 0;
         for (int j = 0; j < 5; j++) {
-            comps[j]->inputPointer = 0;
-            comps[j]->input[0] = phases[j];
-            comps[j]->input[1] = signal;
+            pushMessage(&(comps[j]->input), phases[j]);
+            pushMessage(&(comps[j]->input), signal);
 
             runProgram(comps[j]);
             signal = popMessage(&(comps[j]->output));
