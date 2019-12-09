@@ -23,10 +23,12 @@ int main(int argc, char const *argv[]) {
     int largest = 0;
     char phaseString[6];
     int phases[5];
-    for (int i = 1232; i < 43212; i++) {
-        for (int i = 0; i < 5; i++) {
-            memcpy(comps[i]->memory, source->memory, sizeof(int) * source->memorySize);
-            comps[i]->instructionPointer = 0;
+    for (int i = 1234; i < 43210; i++) {
+        for (int j = 0; j < 5; j++) {
+            memcpy(comps[j]->memory, source->memory, sizeof(int) * source->memorySize);
+            comps[j]->instructionPointer = 0;
+            comps[j]->input = NULL;
+            comps[j]->output = NULL;
         }
 
         stringify(i, phaseString);
@@ -38,12 +40,21 @@ int main(int argc, char const *argv[]) {
         printf("phases %s\n", phaseString);
 
         int signal = 0;
-        for (int j = 0; j < 5; j++) {
+        int j = 0;
+        while (1) {
+            printf("running phase %d\n", phases[j]);
+
             pushMessage(&(comps[j]->input), phases[j]);
             pushMessage(&(comps[j]->input), signal);
 
             runProgram(comps[j]);
             signal = popMessage(&(comps[j]->output));
+
+            if (j == 4 && comps[j]->haltCode == 99) {
+                break;
+            }
+
+            j = (j + 1) % 5;
         }
 
         if (signal > largest) {

@@ -19,9 +19,9 @@ void opEqualTo(computer*, instruction);
 int resolveParamValue(computer*, int, int);
 
 void runProgram(computer* comp) {
-    comp->running = 1;
+    comp->haltCode = 0;
 
-    while (comp->running == 1) {
+    while (comp->haltCode == 0) {
         executeInstruction(comp);
 
         if (comp->instructionPointer >= comp->memorySize) {
@@ -85,7 +85,7 @@ void executeInstruction(computer* comp) {
             break;
         
         case 99:
-            comp->running = 0;
+            comp->haltCode = 99;
             break;
 
         default:
@@ -118,12 +118,17 @@ void opMultiply(computer* comp, instruction inst) {
 }
 
 void opInput(computer* comp, instruction inst) {
+    if (hasMessages(comp->input) == 0) {
+        comp->haltCode = 3;
+        return;
+    }
+
     int ip = comp->instructionPointer;
     int storeAddress = comp->memory[ip+1];
 
     int value = popMessage(&(comp->input));
 
-    printf("input at address %d: %d\n", ip, value);
+    // printf("input at address %d: %d\n", ip, value);
     comp->memory[storeAddress] = value;
     comp->instructionPointer += 2;
 }

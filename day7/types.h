@@ -14,7 +14,7 @@ computer {
     int instructionPointer;
     message* input;
     message* output;
-    int running;
+    int haltCode;
 };
 
 #define instruction struct instruction

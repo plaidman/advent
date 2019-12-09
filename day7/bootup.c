@@ -16,7 +16,7 @@ computer* bootup(char* filename) {
     comp->memory = populateMemory(pageFile, comp->memorySize);
 
     comp->instructionPointer = 0;
-    comp->running = 0;
+    comp->haltCode = 99;
     comp->output = NULL;
     comp->input = NULL;
 
