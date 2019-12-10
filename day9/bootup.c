@@ -6,7 +6,7 @@
 
 char* readPageFile(char*);
 int countMemory(char*);
-int* populateMemory(char*, int);
+memwidth* populateMemory(char*, memwidth);
 
 computer* bootup(char* filename) {
     computer* comp = malloc(sizeof(computer));
@@ -58,13 +58,14 @@ int countMemory(char* pageFile) {
     return count + 1;
 }
 
-int* populateMemory(char* pageFile, int memSize) {
-    int* memory = malloc(sizeof(int) * memSize);
+memwidth* populateMemory(char* pageFile, memwidth memSize) {
+    memwidth* memory = malloc(sizeof(memwidth) * memSize);
     char* item = strtok(pageFile, ",");
-    int count = 0;
+    memwidth count = 0;
 
     while (item != NULL) {
-        memory[count] = atoi(item);
+        // printf("%s\n", item);
+        memory[count] = atoll(item);
         count++;
 
         item = strtok(NULL, ",");

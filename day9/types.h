@@ -1,21 +1,23 @@
 #ifndef types_h
 #define types_h
 
+#define memwidth long long int
+
 #define message struct message
 message {
-    int value;
+    memwidth value;
     message* next;
 };
 
 #define computer struct computer
 computer {
-    int* memory;
-    int memorySize;
-    int instructionPointer;
+    memwidth* memory;
+    memwidth memorySize;
+    memwidth instructionPointer;
     message* input;
     message* output;
-    int haltCode;
-    int relBase;
+    memwidth haltCode;
+    memwidth relBase;
 };
 
 #define instruction struct instruction
