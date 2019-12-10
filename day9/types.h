@@ -15,6 +15,7 @@ computer {
     message* input;
     message* output;
     int haltCode;
+    int relBase;
 };
 
 #define instruction struct instruction

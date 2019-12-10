@@ -19,6 +19,7 @@ computer* bootup(char* filename) {
     comp->haltCode = -1;
     comp->output = NULL;
     comp->input = NULL;
+    comp->relBase = 0;
 
     return comp;
 }

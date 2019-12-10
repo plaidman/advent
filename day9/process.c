@@ -15,6 +15,7 @@ void opJumpIfTrue(computer*, instruction);
 void opJumpIfFalse(computer*, instruction);
 void opLessThan(computer*, instruction);
 void opEqualTo(computer*, instruction);
+void opAdjustBase(computer*, instruction);
 
 int resolveParamValue(computer*, int, int);
 
@@ -84,6 +85,10 @@ void executeInstruction(computer* comp) {
             opEqualTo(comp, inst);
             break;
         
+        case 9:
+            opAdjustBase(comp, inst);
+            break;
+        
         case 99:
             comp->haltCode = 99;
             break;
@@ -99,7 +104,7 @@ void opAdd(computer* comp, instruction inst) {
 
     int firstParam = resolveParamValue(comp, ip+1, inst.paramAMode);
     int secondParam = resolveParamValue(comp, ip+2, inst.paramBMode);
-    int storeParam = comp->memory[ip+3];
+    int storeParam = resolveParamValue(comp, ip+3, inst.paramCMode);
 
     comp->memory[storeParam] = firstParam + secondParam;
 
@@ -110,7 +115,7 @@ void opMultiply(computer* comp, instruction inst) {
     int ip = comp->instructionPointer;
     int firstParam = resolveParamValue(comp, ip+1, inst.paramAMode);
     int secondParam = resolveParamValue(comp, ip+2, inst.paramBMode);
-    int storeParam = comp->memory[ip+3];
+    int storeParam = resolveParamValue(comp, ip+3, inst.paramCMode);
 
     comp->memory[storeParam] = firstParam * secondParam;
 
@@ -124,12 +129,12 @@ void opInput(computer* comp, instruction inst) {
     }
 
     int ip = comp->instructionPointer;
-    int storeAddress = comp->memory[ip+1];
+    int storeParam = resolveParamValue(comp, ip+1, inst.paramCMode);
 
     int value = popMessage(&(comp->input));
 
     printf("input at address %d: %d\n", ip, value);
-    comp->memory[storeAddress] = value;
+    comp->memory[storeParam] = value;
     comp->instructionPointer += 2;
 }
 
@@ -170,12 +175,12 @@ void opLessThan(computer* comp, instruction inst) {
     int ip = comp->instructionPointer;
     int firstParam = resolveParamValue(comp, ip+1, inst.paramAMode);
     int secondParam = resolveParamValue(comp, ip+2, inst.paramBMode);
-    int storeAddress = comp->memory[ip+3];
+    int storeParam = resolveParamValue(comp, ip+3, inst.paramCMode);
 
     if (firstParam < secondParam) {
-        comp->memory[storeAddress] = 1;
+        comp->memory[storeParam] = 1;
     } else {
-        comp->memory[storeAddress] = 0;
+        comp->memory[storeParam] = 0;
     }
 
     comp->instructionPointer += 4;
@@ -185,15 +190,24 @@ void opEqualTo(computer* comp, instruction inst) {
     int ip = comp->instructionPointer;
     int firstParam = resolveParamValue(comp, ip+1, inst.paramAMode);
     int secondParam = resolveParamValue(comp, ip+2, inst.paramBMode);
-    int storeAddress = comp->memory[ip+3];
+    int storeParam = resolveParamValue(comp, ip+3, inst.paramCMode);
 
     if (firstParam == secondParam) {
-        comp->memory[storeAddress] = 1;
+        comp->memory[storeParam] = 1;
     } else {
-        comp->memory[storeAddress] = 0;
+        comp->memory[storeParam] = 0;
     }
 
     comp->instructionPointer += 4;
+}
+
+void opAdjustBase(computer* comp, instruction inst) {
+    int ip = comp->instructionPointer;
+    int firstParam = resolveParamValue(comp, ip+1, inst.paramAMode);
+
+    comp->relBase += firstParam;
+
+    comp->instructionPointer += 2;
 }
 
 int resolveParamValue(computer* comp, int address, int mode) {
@@ -205,6 +219,9 @@ int resolveParamValue(computer* comp, int address, int mode) {
         
         case 1:
             return value;
+
+        case 2:
+            return comp->memory[comp->relBase + value];
 
         default:
             printf("invalid mode: %d\n", mode);
