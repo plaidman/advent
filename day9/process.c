@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "types.h"
 #include "messages.h"
@@ -84,7 +85,7 @@ void executeInstruction(computer* comp) {
         case 8:
             opEqualTo(comp, inst);
             break;
-        
+
         case 9:
             opAdjustBase(comp, inst);
             break;
@@ -215,16 +216,35 @@ int resolveParamValue(computer* comp, int address, int mode) {
 
     switch (mode) {
         case 0:
+            growMemory(comp, value);
             return comp->memory[value];
         
         case 1:
             return value;
 
         case 2:
+            growMemory(comp, comp->relBase + value);
             return comp->memory[comp->relBase + value];
 
         default:
             printf("invalid mode: %d\n", mode);
             exit(1);
     }
+}
+
+void growMemory(computer* comp, int address) {
+    address += 200;
+    if (comp->memorySize > address) {
+        return;
+    }
+
+    int* newMemory = malloc(sizeof(int) * address);
+    for (int i = 0; i < address; i++) {
+        newMemory[i] = 0;
+    }
+
+    memcpy(newMemory, comp->memory, sizeof(int) * comp->memorySize);
+
+    comp->memory = newMemory;
+    comp->memorySize = address;
 }
