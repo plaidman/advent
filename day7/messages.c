@@ -4,6 +4,7 @@
 #include "types.h"
 
 void pushMessage(message** messageStack, int value) {
+    // printf("pushing %d\n", value);
     message* new = malloc(sizeof(message));
     new->value = value;
     new->next = NULL;
@@ -38,6 +39,7 @@ int popMessage(message** messageStack) {
 
     int value = (*messageStack)->value;
     *messageStack = (*messageStack)->next;
+    // printf("popping %d\n", value);
 
     return value;
 }

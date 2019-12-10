@@ -23,12 +23,13 @@ int main(int argc, char const *argv[]) {
     int largest = 0;
     char phaseString[6];
     int phases[5];
-    for (int i = 1234; i < 43210; i++) {
+    for (int i = 56787; i < 98767; i++) {
         for (int j = 0; j < 5; j++) {
             memcpy(comps[j]->memory, source->memory, sizeof(int) * source->memorySize);
             comps[j]->instructionPointer = 0;
             comps[j]->input = NULL;
             comps[j]->output = NULL;
+            comps[j]->haltCode = -1;
         }
 
         stringify(i, phaseString);
@@ -44,11 +45,15 @@ int main(int argc, char const *argv[]) {
         while (1) {
             printf("running phase %d\n", phases[j]);
 
-            pushMessage(&(comps[j]->input), phases[j]);
+            if (comps[j]->haltCode != 3) {
+                pushMessage(&(comps[j]->input), phases[j]);
+            }
             pushMessage(&(comps[j]->input), signal);
 
             runProgram(comps[j]);
-            signal = popMessage(&(comps[j]->output));
+            while (hasMessages(comps[j]->output) == 1) {
+                signal = popMessage(&(comps[j]->output));
+            }
 
             if (j == 4 && comps[j]->haltCode == 99) {
                 break;
@@ -90,7 +95,7 @@ int validate(char* phases) {
         return 0;
     }
 
-    char correctPhases[] = "01234";
+    char correctPhases[] = "98765";
     for (int i = 0; i < strlen(correctPhases); i++) {
         if (strchr(phases, correctPhases[i]) == NULL) {
             return 0;
