@@ -21,115 +21,132 @@ Cell {
     int type;
     int distance;
     Cell** directions;
+    int prevDir;
 };
 
-void handleCell(Cell*, Computer*, Cell**);
-void handleDirection(Cell*, Computer*, Cell**, int, int);
-int allDirectionsKnown(Cell*);
-void populateWall(Cell*, Computer*, int, int);
-void populateWalls(Cell*, Computer*);
-Memwidth tryDirection(Computer*, int, int);
+void populateCell(Cell*, Computer*, Cell**);
+void populateDirection(Cell*, Computer*, Cell**, int, int);
+Memwidth tryDirection(Computer*, int);
 Cell* newCell(int);
+void printCell(Cell*);
+void distanceCell(Cell*, int, Cell**);
 
 int main(int argc, char const *argv[]) {
     Computer* comp = bootup("input.txt");
     Cell* grid = newCell(FLOOR);
     Cell* current = grid;
     Cell* oxygen = NULL;
+    Cell* maxDist = grid;
 
-    handleCell(current, comp, &oxygen);
+    populateCell(current, comp, &oxygen);
 
     if (oxygen == NULL) {
         printf("oxygen not found\n");
         exit(1);
     }
+
+    distanceCell(oxygen, 0, &maxDist);
+    printf("distance to start %d\n", grid->distance);
+    printf("distance to last %d\n", maxDist->distance);
     
     exit(0);
 }
 
-void handleCell(Cell* current, Computer* comp, Cell** oxygen) {
-    populateWalls(current, comp);
-
-    while (allDirectionsKnown(current) == 1) {
+void distanceCell(Cell* current, int distance, Cell** maxDist) {
+    if (current->type == WALL) {
         return;
     }
 
-    handleDirection(current, comp, oxygen, UP, DOWN);
-    handleDirection(current, comp, oxygen, DOWN, UP);
-    handleDirection(current, comp, oxygen, LEFT, RIGHT);
-    handleDirection(current, comp, oxygen, RIGHT, LEFT);
-}
 
-void handleDirection(Cell* current, Computer* comp, Cell** oxygen, int forwards, int backwards) {
-    if (current->directions[forwards] != NULL) {
-        Memwidth result = tryDirection(comp, forwards, 1);
-        Cell* new = newCell(result);
-
-        if (result == OX_SYS) {
-            if (*oxygen == NULL) {
-                printf("found oxygen twice\n");
-                exit(1);
-            }
-
-            *oxygen = new;
-        }
-
-        new->directions[backwards] = current;
-        current->directions[forwards] = new;
-
-        handleCell(new, comp, oxygen);
-    }
-}
-
-int allDirectionsKnown(Cell* cell) {
-    for (int i = 0; i < 4; i++) {
-        if (cell->directions[i] == NULL) {
-            return 0;
-        }
+    if (current->distance != -1 && current->distance <= distance) {
+        return;
     }
 
-    return 1;
+    if ((*maxDist)->distance < distance) {
+        *maxDist = current;
+    }
+
+    current->distance = distance;
+
+    distanceCell(current->directions[UP], distance + 1, maxDist);
+    distanceCell(current->directions[DOWN], distance + 1, maxDist);
+    distanceCell(current->directions[LEFT], distance + 1, maxDist);
+    distanceCell(current->directions[RIGHT], distance + 1, maxDist);
 }
 
-void populateWall(Cell* cell, Computer* comp, int forwards, int backwards) {
-    Memwidth result = tryDirection(comp, forwards, 0);
+void populateCell(Cell* current, Computer* comp, Cell** oxygen) {
+    populateDirection(current, comp, oxygen, UP, DOWN);
+    populateDirection(current, comp, oxygen, DOWN, UP);
+    populateDirection(current, comp, oxygen, LEFT, RIGHT);
+    populateDirection(current, comp, oxygen, RIGHT, LEFT);
 
+    if (current->prevDir == -1) {
+        return;
+    }
+
+    Memwidth result = tryDirection(comp, current->prevDir);
     if (result == WALL) {
-        cell->directions[UP] = newCell(WALL);
-    } else {
-        tryDirection(comp, backwards, 1);
-    }
-}
-
-void populateWalls(Cell* cell, Computer* comp) {
-    populateWall(cell, comp, UP, DOWN);
-    populateWall(cell, comp, DOWN, UP);
-    populateWall(cell, comp, LEFT, RIGHT);
-    populateWall(cell, comp, RIGHT, LEFT);
-}
-
-Memwidth tryDirection(Computer* comp, int direction, int expectsFloor) {
-    pushMessage(&(comp->input), direction+1);
-    runProgram(comp);
-    Memwidth response = popMessage(&(comp->output));
-    
-    if (expectsFloor == 1 && response == WALL) {
-        printf("unexpected wall where a floor was known\n");
+        printf("hit unexpected wall\n");
         exit(1);
     }
+}
 
-    return response;
+void populateDirection(Cell* current, Computer* comp, Cell** oxygen, int forwards, int backwards) {
+    if (current->directions[forwards] != NULL) {
+        return;
+    }
+
+    Memwidth result = tryDirection(comp, forwards);
+    Cell* new = newCell(result);
+
+    if (result == WALL) {
+        current->directions[forwards] = new;
+        return;
+    }
+
+    if (result == OX_SYS) {
+        if (*oxygen != NULL) {
+            printf("found oxygen twice\n");
+            exit(1);
+        }
+
+        *oxygen = new;
+    }
+
+    new->directions[backwards] = current;
+    current->directions[forwards] = new;
+    new->prevDir = backwards;
+
+    populateCell(new, comp, oxygen);
+}
+
+void printCell(Cell* cell) {
+    printf(
+        "cell type: %d, up: %d, down: %d, left: %d, right %d\n",
+        cell->type,
+        cell->directions[UP]->type,
+        cell->directions[DOWN]->type,
+        cell->directions[LEFT]->type,
+        cell->directions[RIGHT]->type
+    );
+}
+
+Memwidth tryDirection(Computer* comp, int direction) {
+    pushMessage(&(comp->input), direction+1);
+    runProgram(comp);
+    return popMessage(&(comp->output));
 }
 
 Cell* newCell(int type) {
     Cell* cell = malloc(sizeof(Cell));
 
     cell->type = type;
-    cell->distance = 0;
+    cell->distance = -1;
+    cell->prevDir = -1;
 
     cell->directions = malloc(sizeof(Cell*) * 4);
     for (int i = 0; i < 4; i++) {
-        cell->directions[0] = NULL;
+        cell->directions[i] = NULL;
     }
 
     return cell;
