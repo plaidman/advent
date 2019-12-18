@@ -7,7 +7,6 @@
 #include "process.h"
 #include "messages.h"
 
-
 int main(int argc, char const *argv[]) {
     Computer* comp = bootup("input.txt");
 
