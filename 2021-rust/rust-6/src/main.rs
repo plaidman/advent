@@ -1,54 +1,37 @@
-mod segment;
-
 use std::{io::{BufReader, BufRead}, fs::File};
-use segment::Segment;
 
-const SIZE: usize = 1000;
+const DAYS: u16 = 256;
 
 fn main() {
     let file = File::open("src/input.txt").expect("failed to open file");
-    let lines = BufReader::new(file).lines()
-        .map(|i| i.unwrap())
-        .map(parse_segments);
+    let mut lines = BufReader::new(file).lines().map(|i| i.unwrap());
     
-    let mut line = vec![];
-    line.resize(SIZE, 0);
-    let mut grid = vec![];
-    grid.resize(SIZE, line);
-    for line in lines {
-        // if line.is_diagonal() {
-        //     continue;
-        // }
-        
-        for (x,y) in line {
-            grid[x][y] += 1;
-        }
-    }
+    let line = lines.next().unwrap();
+    let mut fish = Vec::from_iter(line.split(',').map(|i| i.parse::<u8>().unwrap()));
+    let mut spawn = 0;
+    
+    // keep an array of the number of fish in day 0, day 1, day 2, etc.
+    // cycle them toward the 0th element. when they hit the 0th element, move them to the 6th position and increment the 8th element
+    
+    for day in 0..DAYS {
+        println!("{day}");
 
-    let mut total = 0;
-    for line in grid {
-        for cell in line {
-            if cell >= 2 {
-                total += 1;
+        for i in 0..fish.len() {
+            if fish[i] == 0 {
+                fish[i] = 6;
+                spawn += 1;
+                continue;
             }
+
+            fish[i] -= 1;
         }
+        
+        for _i in 0..spawn {
+            fish.push(8);
+        }
+        spawn = 0;
     }
 
-    println!("{:?}", total);
+    println!("{:?}", fish.len());
     println!("done");
-}
-
-fn parse_segments(line: String) -> Segment {
-    let iter = line.split(" -> ");
-    let mut vec = Vec::from_iter(iter);
-    vec.insert(1, ",");
-    let coord_str = vec.concat();
-    let mut coords = coord_str.split(',').map(|i| i.parse::<usize>().unwrap());
-    
-    return Segment::new(
-        coords.next().unwrap(),
-        coords.next().unwrap(),
-        coords.next().unwrap(),
-        coords.next().unwrap(),
-    );
 }
