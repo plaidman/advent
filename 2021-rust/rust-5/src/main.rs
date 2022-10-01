@@ -16,6 +16,7 @@ fn main() {
     let mut grid = vec![];
     grid.resize(SIZE, line);
     for line in lines {
+        // uncomment this line for part 1
         // if line.is_diagonal() {
         //     continue;
         // }

@@ -7,31 +7,32 @@ fn main() {
     let mut lines = BufReader::new(file).lines().map(|i| i.unwrap());
     
     let line = lines.next().unwrap();
-    let mut fish = Vec::from_iter(line.split(',').map(|i| i.parse::<u8>().unwrap()));
-    let mut spawn = 0;
-    
-    // keep an array of the number of fish in day 0, day 1, day 2, etc.
-    // cycle them toward the 0th element. when they hit the 0th element, move them to the 6th position and increment the 8th element
-    
-    for day in 0..DAYS {
-        println!("{day}");
+    let fishes = line.split(',').map(|i| i.parse::<usize>().unwrap());
 
-        for i in 0..fish.len() {
-            if fish[i] == 0 {
-                fish[i] = 6;
-                spawn += 1;
-                continue;
-            }
+    let mut pond: Vec<usize> = vec![0;9];
+    let mut sum = 0;
+    let mut spawn;
 
-            fish[i] -= 1;
-        }
-        
-        for _i in 0..spawn {
-            fish.push(8);
-        }
-        spawn = 0;
+    for fish in fishes {
+        pond[fish] += 1;
+        sum += 1;
+    }
+    
+    for _day in 0..DAYS {
+        spawn = pond[0];
+        pond[0] = pond[1];
+        pond[1] = pond[2];
+        pond[2] = pond[3];
+        pond[3] = pond[4];
+        pond[4] = pond[5];
+        pond[5] = pond[6];
+        pond[6] = pond[7];
+        pond[7] = pond[8];
+        pond[8] = spawn;
+        pond[6] += spawn;
+        sum += spawn;
     }
 
-    println!("{:?}", fish.len());
+    println!("{:?}", sum);
     println!("done");
 }
