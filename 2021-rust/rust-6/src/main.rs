@@ -1,5 +1,6 @@
 use std::{io::{BufReader, BufRead}, fs::File};
 
+// switch this for part 1 and 2
 const DAYS: u16 = 256;
 
 fn main() {
