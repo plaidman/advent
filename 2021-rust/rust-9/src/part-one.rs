@@ -1,8 +1,5 @@
 use std::{io::{BufReader, BufRead, Error}, fs::File};
 
-// algorithm is not mine, see notes.txt
-// code is mine
-
 fn main() {
     let file = File::open("src/input.txt").expect("failed to open file");
     let lines = Vec::from_iter(BufReader::new(file).lines().map(parse_line));
