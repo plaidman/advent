@@ -31,8 +31,12 @@ class Cell:
             self.tallestUp = -1
         else:
             upCell = Cell.grid.getCell(self.x, self.y - 1)
-            tallestUp = upCell.getTallestUp()[0]
-            self.tallestUp = max(tallestUp, upCell.height)
+            tallestUp, distanceUp = upCell.getTallestUp()
+
+            if upCell.height >= tallestUp:
+                self.tallestUp = upCell.height
+            else:
+                self.tallestUp = tallestUp
 
         return self.tallestUp, self.distanceUp
 
@@ -44,8 +48,12 @@ class Cell:
             self.tallestDown = -1
         else:
             downCell = Cell.grid.getCell(self.x, self.y + 1)
-            tallestDown = downCell.getTallestDown()[0]
-            self.tallestDown = max(tallestDown, downCell.height)
+            tallestDown, distanceDown = downCell.getTallestDown()
+
+            if downCell.height >= tallestDown:
+                self.tallestDown = downCell.height
+            else:
+                self.tallestDown = tallestDown
 
         return self.tallestDown, self.distanceDown
 
@@ -57,8 +65,12 @@ class Cell:
             self.tallestLeft = -1
         else:
             leftCell = Cell.grid.getCell(self.x - 1, self.y)
-            tallestLeft = leftCell.getTallestLeft()[0]
-            self.tallestLeft = max(tallestLeft, leftCell.height)
+            tallestLeft, distanceLeft = leftCell.getTallestLeft()
+
+            if leftCell.height >= tallestLeft:
+                self.tallestLeft = leftCell.height
+            else:
+                self.tallestLeft = tallestLeft
 
         return self.tallestLeft, self.distanceLeft
 
@@ -70,8 +82,12 @@ class Cell:
             self.tallestRight = -1
         else:
             rightCell = Cell.grid.getCell(self.x + 1, self.y)
-            tallestRight = rightCell.getTallestRight()[0]
-            self.tallestRight = max(tallestRight, rightCell.height)
+            tallestRight, distanceRight = rightCell.getTallestRight()
+
+            if rightCell.height >= tallestRight:
+                self.tallestRight = rightCell.height
+            else:
+                self.tallestRight = tallestRight
 
         return self.tallestRight, self.distanceRight
 
