@@ -9,101 +9,81 @@ class Cell:
 
     def __init__(self, height: int, x: int, y: int) -> None:
         self.height = height
-
         self.x = x
         self.y = y
 
-        self.tallestUp = -2
-        self.tallestDown = -2
-        self.tallestLeft = -2
-        self.tallestRight = -2
+        self.blockUp: tuple[bool, int] = None
+        self.blockDown: tuple[bool, int] = None
+        self.blockLeft: tuple[bool, int] = None
+        self.blockRight: tuple[bool, int] = None
 
-        self.distanceUp = 0
-        self.distanceDown = 0
-        self.distanceLeft = 0
-        self.distanceRight = 0
+    def findBlockerUp(self) -> tuple[int, bool]:
+        if self.blockUp != None: return self.blockUp
+        if self.y == 0: self.blockUp = (False, 0); return self.blockUp
 
-    def getTallestUp(self) -> tuple[int, int]:
-        if self.tallestUp != -2:
-            return self.tallestUp, self.distanceUp
+        blocked = False
+        for diff in range(self.y):
+            diff += 1
+            height = Cell.grid.getCell(self.x, self.y - diff).height
+            if height >= self.height:
+                blocked = True
+                break
+        
+        self.distUp = (blocked, diff); return self.distUp
 
-        if self.y == 0:
-            self.tallestUp = -1
-        else:
-            upCell = Cell.grid.getCell(self.x, self.y - 1)
-            tallestUp, distanceUp = upCell.getTallestUp()
+    def findBlockerDown(self) -> tuple[int, bool]:
+        if self.blockDown != None: return self.blockDown
+        if self.y == Cell.grid.height - 1: self.blockDown = (False, 0); return self.blockDown
 
-            if upCell.height >= tallestUp:
-                self.tallestUp = upCell.height
-            else:
-                self.tallestUp = tallestUp
+        blocked = False
+        for diff in range(Cell.grid.height - self.y - 1):
+            diff += 1
+            height = Cell.grid.getCell(self.x, self.y + diff).height
+            if height >= self.height:
+                blocked = True
+                break
+        
+        self.distDown = (blocked, diff); return self.distDown
 
-        return self.tallestUp, self.distanceUp
+    def findBlockerLeft(self) -> tuple[int, bool]:
+        if self.blockLeft != None: return self.blockLeft
+        if self.x == 0: self.blockLeft = (False, 0); return self.blockLeft
 
-    def getTallestDown(self) -> tuple[int, int]:
-        if self.tallestDown != -2:
-            return self.tallestDown, self.distanceDown
+        blocked = False
+        for diff in range(self.x):
+            diff += 1
+            height = Cell.grid.getCell(self.x - diff, self.y).height
+            if height >= self.height:
+                blocked = True
+                break
+        
+        self.distLeft = (blocked, diff); return self.distLeft
 
-        if self.y == Cell.grid.height - 1:
-            self.tallestDown = -1
-        else:
-            downCell = Cell.grid.getCell(self.x, self.y + 1)
-            tallestDown, distanceDown = downCell.getTallestDown()
+    def findBlockerRight(self) -> tuple[int, bool]:
+        if self.blockRight != None: return self.blockRight
+        if self.x == Cell.grid.width - 1: self.blockRight = (False, 0); return self.blockRight
 
-            if downCell.height >= tallestDown:
-                self.tallestDown = downCell.height
-            else:
-                self.tallestDown = tallestDown
-
-        return self.tallestDown, self.distanceDown
-
-    def getTallestLeft(self) -> tuple[int, int]:
-        if self.tallestLeft != -2:
-            return self.tallestLeft, self.distanceLeft
-
-        if self.x == 0:
-            self.tallestLeft = -1
-        else:
-            leftCell = Cell.grid.getCell(self.x - 1, self.y)
-            tallestLeft, distanceLeft = leftCell.getTallestLeft()
-
-            if leftCell.height >= tallestLeft:
-                self.tallestLeft = leftCell.height
-            else:
-                self.tallestLeft = tallestLeft
-
-        return self.tallestLeft, self.distanceLeft
-
-    def getTallestRight(self) -> tuple[int, int]:
-        if self.tallestRight != -2:
-            return self.tallestRight, self.distanceRight
-
-        if self.x == Cell.grid.width - 1:
-            self.tallestRight = -1
-        else:
-            rightCell = Cell.grid.getCell(self.x + 1, self.y)
-            tallestRight, distanceRight = rightCell.getTallestRight()
-
-            if rightCell.height >= tallestRight:
-                self.tallestRight = rightCell.height
-            else:
-                self.tallestRight = tallestRight
-
-        return self.tallestRight, self.distanceRight
+        blocked = False
+        for diff in range(Cell.grid.width - self.x - 1):
+            diff += 1
+            height = Cell.grid.getCell(self.x + diff, self.y).height
+            if height >= self.height:
+                blocked = True
+                break
+        
+        self.distRight = (blocked, diff); return self.distRight
 
     def isVisible(self) -> bool:
-        visible = False
+        if self.findBlockerUp()[0] == False: return True
+        if self.findBlockerDown()[0] == False: return True
+        if self.findBlockerLeft()[0] == False: return True
+        if self.findBlockerRight()[0] == False: return True
+        return False
 
-        if self.height > self.getTallestUp()[0]:
-            visible = True
-
-        if self.height > self.getTallestDown()[0]:
-            visible = True
-
-        if self.height > self.getTallestLeft()[0]:
-            visible = True
-
-        if self.height > self.getTallestRight()[0]:
-            visible = True
-
-        return visible
+    def scenicScore(self) -> int:
+        total = 1
+        total *= self.findBlockerUp()[1]
+        total *= self.findBlockerDown()[1]
+        total *= self.findBlockerLeft()[1]
+        total *= self.findBlockerRight()[1]
+        return total

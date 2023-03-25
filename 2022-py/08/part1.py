@@ -1,6 +1,6 @@
 from grid import Grid
 
-with open('test.txt', 'r') as file:
+with open('input.txt', 'r') as file:
     lines = file.read().splitlines()
 
 grid = Grid(lines)
@@ -12,6 +12,11 @@ for y in range(grid.height):
             count += 1
 print(f'count: {count}')
 
-# for y in range(grid.height):
-#     for x in range(grid.width):
-#         print(grid.getCell(x,y).scenicScore())
+max = -1
+for y in range(grid.height):
+    for x in range(grid.width):
+        scenicScore = grid.getCell(x,y).scenicScore()
+        if scenicScore > max:
+            max = scenicScore
+
+print(f'max: {max}')
