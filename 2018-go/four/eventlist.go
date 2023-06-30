@@ -6,13 +6,13 @@ import (
 )
 
 type EventList struct {
-	events *[]Event
+	events []Event
 }
 
 func CreateEventList(lines []string) EventList {
 	events := make([]Event, 0)
 
-	self := EventList{events: &events}
+	self := EventList{events: events}
 
 	self.parseLines(lines)
 	self.sortList()
@@ -20,18 +20,18 @@ func CreateEventList(lines []string) EventList {
 	return self
 }
 
-func (e EventList) appendEvent(event Event) {
-	*e.events = append(*e.events, event)
+func (e *EventList) appendEvent(event Event) {
+	e.events = append(e.events, event)
 }
 
 func (e EventList) sortList() {
-	sort.Slice(*e.events, func(i, j int) bool {
-		events := *e.events
+	sort.Slice(e.events, func(i, j int) bool {
+		events := e.events
 		return events[i].stamp() < events[j].stamp()
 	})
 }
 
-func (e EventList) parseLines(lines []string) {
+func (e *EventList) parseLines(lines []string) {
 	for _, line := range lines {
 		month, day, hour, minute, desc := parseLine(line)
 		event := Event{month, day, hour, minute, desc}

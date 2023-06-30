@@ -12,7 +12,7 @@ func RunDay(filename string, part string) {
 
 	parts := make(map[string]func(lines []string))
 	parts["one"] = partOne
-	parts["two"] = partTwo
+	parts["two"] = partOne
 
 	parts[part](lines)
 }

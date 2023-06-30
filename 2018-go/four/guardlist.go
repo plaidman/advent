@@ -31,7 +31,7 @@ func (g GuardList) checkAndAppend(id string) Guard {
 func (g GuardList) populateGuardList(events EventList) {
 	var currentGuard Guard
 
-	for _, event := range *events.events {
+	for _, event := range events.events {
 		isGuardShift, id := event.isGuardShiftEvent()
 
 		if isGuardShift {
