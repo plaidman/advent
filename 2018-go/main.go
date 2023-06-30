@@ -1,6 +1,7 @@
 package main
 
 import (
+	"advent/2018/five"
 	"advent/2018/four"
 	"advent/2018/one"
 	"advent/2018/three"
@@ -18,6 +19,7 @@ func main() {
 	days["two"] = two.RunDay
 	days["three"] = three.RunDay
 	days["four"] = four.RunDay
+	days["five"] = five.RunDay
 
 	days[os.Args[1]](os.Args[2], os.Args[3])
 }
