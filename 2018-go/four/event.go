@@ -23,7 +23,7 @@ func (e Event) stamp() int {
 	return i
 }
 
-func (e Event) isGuardShift() (bool, string) {
+func (e Event) isGuardShiftEvent() (bool, string) {
 	pattern := regexp.MustCompile("Guard #(\\d+) begins shift")
 	matches := pattern.FindStringSubmatch(e.desc)
 

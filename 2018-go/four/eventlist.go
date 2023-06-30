@@ -1,15 +1,23 @@
 package four
 
-import "sort"
+import (
+	"regexp"
+	"sort"
+)
 
 type EventList struct {
 	events *[]Event
 }
 
-func NewEventList() EventList {
+func CreateEventList(lines []string) EventList {
 	events := make([]Event, 0)
 
-	return EventList{events: &events}
+	self := EventList{events: &events}
+
+	self.parseLines(lines)
+	self.sortList()
+
+	return self
 }
 
 func (e EventList) appendEvent(event Event) {
@@ -21,4 +29,18 @@ func (e EventList) sortList() {
 		events := *e.events
 		return events[i].stamp() < events[j].stamp()
 	})
+}
+
+func (e EventList) parseLines(lines []string) {
+	for _, line := range lines {
+		month, day, hour, minute, desc := parseLine(line)
+		event := Event{month, day, hour, minute, desc}
+		e.appendEvent(event)
+	}
+}
+
+func parseLine(line string) (string, string, string, string, string) {
+	pattern := regexp.MustCompile("^\\[\\d+-(\\d+)-(\\d+) (\\d+):(\\d+)] (.+)$")
+	matches := pattern.FindStringSubmatch(line)
+	return matches[1], matches[2], matches[3], matches[4], matches[5]
 }
