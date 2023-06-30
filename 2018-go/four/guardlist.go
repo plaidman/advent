@@ -1,11 +1,11 @@
 package four
 
 type GuardList struct {
-	guards map[string]Guard
+	guards map[string]*Guard
 }
 
 func CreateGuardList(events EventList) GuardList {
-	guards := make(map[string]Guard)
+	guards := make(map[string]*Guard)
 
 	self := GuardList{guards: guards}
 	self.populateGuardList(events)
@@ -17,19 +17,20 @@ func CreateGuardList(events EventList) GuardList {
 	return self
 }
 
-func (g GuardList) checkAndAppend(id string) Guard {
-	guard, exists := g.guards[id]
+func (g GuardList) checkAndAppend(id string) *Guard {
+	guardPtr, exists := g.guards[id]
 
 	if !exists {
-		guard = NewGuard(id)
-		g.guards[id] = guard
+		guard := NewGuard(id)
+		guardPtr = &guard
+		g.guards[id] = guardPtr
 	}
 
-	return guard
+	return guardPtr
 }
 
 func (g GuardList) populateGuardList(events EventList) {
-	var currentGuard Guard
+	var currentGuard *Guard
 
 	for _, event := range events.events {
 		isGuardShift, id := event.isGuardShiftEvent()
@@ -42,14 +43,16 @@ func (g GuardList) populateGuardList(events EventList) {
 	}
 }
 
-func (g GuardList) FindSleepiestGuard() Guard {
-	sleepiest := NewGuard("temp")
+func (g GuardList) FindSleepiestGuard() *Guard {
+	var sleepiestGuard *Guard
+	guardNapTime := -1
 
-	for _, guard := range g.guards {
-		if *sleepiest.totalNapTime < *guard.totalNapTime {
-			sleepiest = guard
+	for _, guardPtr := range g.guards {
+		if guardNapTime == -1 || guardNapTime < guardPtr.totalNapTime {
+			sleepiestGuard = guardPtr
+			guardNapTime = guardPtr.totalNapTime
 		}
 	}
 
-	return sleepiest
+	return sleepiestGuard
 }
