@@ -36,7 +36,7 @@ func (g Guard) printGuard() {
 	for date, day := range g.days.days {
 		fmt.Println("  date " + date)
 
-		for _, nap := range *day.naps {
+		for _, nap := range day.naps {
 			fmt.Printf("    from %d to %d, total %d\n", nap.startMin, nap.endMin, nap.diff)
 		}
 	}

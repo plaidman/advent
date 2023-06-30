@@ -1,22 +1,23 @@
 package four
 
 type DayList struct {
-	days map[string]Day
+	days map[string]*Day
 }
 
 func NewDayList() DayList {
-	days := make(map[string]Day)
+	days := make(map[string]*Day)
 
 	return DayList{days: days}
 }
 
-func (d DayList) checkAndAppend(date string) Day {
-	day, exists := d.days[date]
+func (d DayList) checkAndAppend(date string) *Day {
+	dayPtr, exists := d.days[date]
 
 	if !exists {
-		day = NewDay()
-		d.days[date] = day
+		day := NewDay()
+		dayPtr = &day
+		d.days[date] = dayPtr
 	}
 
-	return day
+	return dayPtr
 }
