@@ -6,13 +6,15 @@ import (
 )
 
 type Guard struct {
-	id           string
-	events       []Event
-	days         DayList
-	totalNapTime int
+	id              int
+	events          []Event
+	days            DayList
+	totalNapTime    int
+	sleepiestMinute int
+	daysAtMinute    int
 }
 
-func NewGuard(id string) Guard {
+func NewGuard(id int) Guard {
 	events := make([]Event, 0)
 	days := NewDayList()
 
@@ -23,8 +25,10 @@ func NewGuard(id string) Guard {
 
 func (g Guard) printGuard() {
 	fmt.Println("----------------------")
-	fmt.Printf("guard #%s:\n", g.id)
+	fmt.Printf("guard #%d:\n", g.id)
 	fmt.Printf("  totalNap %d:\n", g.totalNapTime)
+	fmt.Printf("  sleepiestMinute %d:\n", g.sleepiestMinute)
+	fmt.Printf("  daysAtMinute %d:\n", g.daysAtMinute)
 	fmt.Println("---")
 
 	for _, event := range g.events {
@@ -62,7 +66,24 @@ func (g *Guard) parseSchedule() {
 	}
 }
 
-func (g Guard) daysAsleepAtTime(min int) int {
+func (g *Guard) findSleepiestMinute() {
+	sleepiestMinute := -1
+	daysAtMinute := -1
+
+	for i := 0; i < 60; i++ {
+		daysAtMinuteI := g.daysAsleepAtMinute(i)
+
+		if daysAtMinuteI > daysAtMinute {
+			sleepiestMinute = i
+			daysAtMinute = daysAtMinuteI
+		}
+	}
+
+	g.daysAtMinute = daysAtMinute
+	g.sleepiestMinute = sleepiestMinute
+}
+
+func (g Guard) daysAsleepAtMinute(min int) int {
 	daysAsleep := 0
 
 	for _, day := range g.days.days {

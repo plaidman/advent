@@ -23,13 +23,14 @@ func (e Event) stamp() int {
 	return i
 }
 
-func (e Event) isGuardShiftEvent() (bool, string) {
+func (e Event) isGuardShiftEvent() (bool, int) {
 	pattern := regexp.MustCompile("Guard #(\\d+) begins shift")
 	matches := pattern.FindStringSubmatch(e.desc)
 
 	if matches == nil {
-		return false, ""
+		return false, -1
 	}
 
-	return true, matches[1]
+	id, _ := strconv.Atoi(matches[1])
+	return true, id
 }

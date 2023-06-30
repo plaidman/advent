@@ -1,23 +1,24 @@
 package four
 
 type GuardList struct {
-	guards map[string]*Guard
+	guards map[int]*Guard
 }
 
 func CreateGuardList(events EventList) GuardList {
-	guards := make(map[string]*Guard)
+	guards := make(map[int]*Guard)
 
 	self := GuardList{guards: guards}
 	self.populateGuardList(events)
 
 	for _, guard := range self.guards {
 		guard.parseSchedule()
+		guard.findSleepiestMinute()
 	}
 
 	return self
 }
 
-func (g GuardList) checkAndAppend(id string) *Guard {
+func (g GuardList) checkAndAppend(id int) *Guard {
 	guardPtr, exists := g.guards[id]
 
 	if !exists {
@@ -41,18 +42,4 @@ func (g GuardList) populateGuardList(events EventList) {
 			currentGuard.appendEvent(event)
 		}
 	}
-}
-
-func (g GuardList) FindSleepiestGuard() *Guard {
-	var sleepiestGuard *Guard
-	guardNapTime := -1
-
-	for _, guardPtr := range g.guards {
-		if guardNapTime == -1 || guardNapTime < guardPtr.totalNapTime {
-			sleepiestGuard = guardPtr
-			guardNapTime = guardPtr.totalNapTime
-		}
-	}
-
-	return sleepiestGuard
 }

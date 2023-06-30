@@ -21,17 +21,30 @@ func partOne(lines []string) {
 	events := CreateEventList(lines)
 	guards := CreateGuardList(events)
 
-	sleepiestGuard := guards.FindSleepiestGuard()
-	sleepiestGuard.printGuard()
+	// for _, guard := range guards.guards {
+	// 	guard.printGuard()
+	// }
 
-	sleepiestMin := -1
-	sleepiestMinDays := -1
-	for i := 0; i < 60; i++ {
-		if sleepiestGuard.daysAsleepAtTime(i) > sleepiestMinDays {
-			sleepiestMin = i
-			sleepiestMinDays = sleepiestGuard.daysAsleepAtTime(i)
+	// part 1
+	guardSleepTime := -1
+	var sleepiestGuard Guard
+	for _, guard := range guards.guards {
+		if guardSleepTime == -1 || guardSleepTime < guard.totalNapTime {
+			guardSleepTime = guard.totalNapTime
+			sleepiestGuard = *guard
 		}
 	}
 
-	fmt.Printf("sleepiest minute: %d\n", sleepiestMin)
+	fmt.Printf("part 1: %d\n", sleepiestGuard.sleepiestMinute*sleepiestGuard.id)
+
+	// part 2
+	guardSleepDays := -1
+	for _, guard := range guards.guards {
+		if guardSleepDays == -1 || guardSleepDays < guard.daysAtMinute {
+			guardSleepDays = guard.daysAtMinute
+			sleepiestGuard = *guard
+		}
+	}
+
+	fmt.Printf("part 2: %d\n", sleepiestGuard.sleepiestMinute*sleepiestGuard.id)
 }
