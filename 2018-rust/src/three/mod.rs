@@ -1,23 +1,69 @@
-mod part_one;
-mod part_two;
+use std::{ io::{BufReader, BufRead }, fs::File };
+use regex_lite::Regex;
+use std::collections::HashMap;
 
-use std::{ io::{ BufReader, BufRead }, fs::File };
+type Patch = (isize, usize, usize, usize, usize);
 
-pub fn run(part: usize, filename: String) {
-    let parts = [part_one::run, part_two::run];
+pub fn run(_part: usize, filename: String) {
+    let file = File::open(filename).expect("failed to open file");
+    let lines: Vec<String> = BufReader::new(file).lines().map(|i| i.unwrap()).collect();
+    
+    let mut fabric = HashMap::<String, isize>::new();
+    let mut overlapping = HashMap::<isize, bool>::new();
 
-    if part > parts.len() {
-        println!("usage: cargo run <day.part> <input>");
-        println!("  <part> cannot be greater than {}", parts.len());
-        return;
+    for line in lines {
+        let (id, left, top, width, height) = parse_patch(line);
+        
+        overlapping.insert(id, false);
+        
+        for x in left..left+width {
+            for y in top..top+height {
+                let coord = coord_stringify(x,y);
+
+                if fabric.contains_key(&coord) {
+                    let other_id = *fabric.get(&coord).unwrap();
+                    
+                    overlapping.insert(id, true);
+                    overlapping.insert(other_id, true);
+                    
+                    fabric.insert(coord, -1);
+                } else {
+                    fabric.insert(coord, id);
+                }
+            }
+        }
     }
     
-    let file = File::open(filename).expect("failed to open file");
-    let lines: Vec<Vec<char>> = Vec::from_iter(
-        BufReader::new(file).lines().map(
-            |i| Vec::from_iter(i.unwrap().chars())
-        )
-    );
+    let thing: Vec<_> = fabric.iter().filter(
+        |&i| { let (_, v) = i; *v < 0 }
+    ).collect();
+    println!("overlapped squares: {}", thing.len());
     
-    parts[part-1](lines);
+    let (id, _) = overlapping.iter().find(
+        |&i| { let (_, v) = i; *v == false }
+    ).unwrap();
+    println!("unoverlapped patch id: {}", id);
+}
+
+fn coord_stringify(x: usize, y: usize) -> String {
+    let mut coord = String::new();
+    
+    coord.push_str(x.to_string().as_str());
+    coord.push(',');
+    coord.push_str(y.to_string().as_str());
+
+    coord
+}
+
+fn parse_patch(line: String) -> Patch {
+    let regex = Regex::new(r"#(\d+) @ (\d+),(\d+): (\d+)x(\d+)").unwrap();
+    let captures = regex.captures(line.as_str()).unwrap();
+
+    let id: isize = captures.get(1).unwrap().as_str().parse().unwrap();
+    let x: usize = captures.get(2).unwrap().as_str().parse().unwrap();
+    let y: usize = captures.get(3).unwrap().as_str().parse().unwrap();
+    let width: usize = captures.get(4).unwrap().as_str().parse().unwrap();
+    let height: usize = captures.get(5).unwrap().as_str().parse().unwrap();
+    
+    (id, x, y, width, height)
 }

@@ -31,8 +31,7 @@ pub fn run(lines: Vec<Vec<char>>) {
         }
     }
     
-    let most_common_string = String::from_iter(most_common.into_iter());
-    println!("common string: {:?}", most_common_string);
+    println!("common string: {:?}", most_common);
 }
 
 fn find_common(one: &Vec<char>, two: &Vec<char>) -> Vec<char> {
