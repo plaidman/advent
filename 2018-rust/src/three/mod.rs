@@ -56,14 +56,15 @@ fn coord_stringify(x: usize, y: usize) -> String {
 }
 
 fn parse_patch(line: String) -> Patch {
-    let regex = Regex::new(r"#(\d+) @ (\d+),(\d+): (\d+)x(\d+)").unwrap();
-    let captures = regex.captures(line.as_str()).unwrap();
+    let regex = Regex::new(r"^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$").unwrap();
 
-    let id: isize = captures.get(1).unwrap().as_str().parse().unwrap();
-    let x: usize = captures.get(2).unwrap().as_str().parse().unwrap();
-    let y: usize = captures.get(3).unwrap().as_str().parse().unwrap();
-    let width: usize = captures.get(4).unwrap().as_str().parse().unwrap();
-    let height: usize = captures.get(5).unwrap().as_str().parse().unwrap();
-    
-    (id, x, y, width, height)
+    regex.captures(line.as_str()).and_then(
+        |f| Some((
+            f.get(1).unwrap().as_str().parse::<isize>().unwrap(),
+            f.get(2).unwrap().as_str().parse::<usize>().unwrap(),
+            f.get(3).unwrap().as_str().parse::<usize>().unwrap(),
+            f.get(4).unwrap().as_str().parse::<usize>().unwrap(),
+            f.get(5).unwrap().as_str().parse::<usize>().unwrap(),
+        ))
+    ).unwrap()
 }

@@ -1,6 +1,7 @@
 mod one;
 mod two;
 mod three;
+mod four;
 
 use std::env;
 use regex_lite::Regex;
@@ -12,11 +13,12 @@ fn main() {
         (one::run as DayFn, "one"),
         (two::run, "two"),
         (three::run, "three"),
+        (four::run, "four"),
     ];
     
     let args: Vec<String> = env::args().collect();
     let arg_string = args.join(" ");
-    let regex = Regex::new(r"^.* (\d+)\.([12]) (.*)").unwrap();
+    let regex = Regex::new(r"^.* (\d+)\.([12]) (.*)$").unwrap();
     
     println!("\n");
 
@@ -28,10 +30,13 @@ fn main() {
         return;
     }
 
-    let matches = regex.captures(&arg_string).unwrap();
-    let day = matches.get(1).unwrap().as_str().parse::<usize>().unwrap();
-    let part = matches.get(2).unwrap().as_str().parse::<usize>().unwrap();
-    let filename = matches.get(3).unwrap().as_str();
+    let (day, part, filename) = regex.captures(&arg_string).and_then(
+        |f| Some((
+            f.get(1).unwrap().as_str().parse::<usize>().unwrap(),
+            f.get(2).unwrap().as_str().parse::<usize>().unwrap(),
+            f.get(3).unwrap().as_str().parse::<String>().unwrap(),
+        ))
+    ).unwrap();
 
     if day > days.len() {
         println!("usage: cargo run <day.part> <input>");
