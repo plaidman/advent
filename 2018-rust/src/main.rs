@@ -31,10 +31,10 @@ fn main() {
     }
 
     let (day, part, filename) = regex.captures(&arg_string).and_then(
-        |f| Some((
-            f.get(1).unwrap().as_str().parse::<usize>().unwrap(),
-            f.get(2).unwrap().as_str().parse::<usize>().unwrap(),
-            f.get(3).unwrap().as_str().parse::<String>().unwrap(),
+        |cap| Some((
+            cap.get(1).unwrap().as_str().parse::<usize>().unwrap(),
+            cap.get(2).unwrap().as_str().parse::<usize>().unwrap(),
+            cap.get(3).unwrap().as_str().parse::<String>().unwrap(),
         ))
     ).unwrap();
 

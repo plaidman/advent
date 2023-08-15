@@ -14,7 +14,7 @@ pub fn run(part: usize, filename: String) {
     
     let file = File::open(filename).expect("failed to open file");
     let lines: Vec<Vec<char>> = BufReader::new(file).lines().map(
-        |i| i.unwrap().chars().collect()
+        |line| line.unwrap().chars().collect()
     ).collect();
     
     parts[part-1](lines);

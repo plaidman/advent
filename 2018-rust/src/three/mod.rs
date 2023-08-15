@@ -6,7 +6,9 @@ type Patch = (isize, usize, usize, usize, usize);
 
 pub fn run(_part: usize, filename: String) {
     let file = File::open(filename).expect("failed to open file");
-    let lines: Vec<String> = BufReader::new(file).lines().map(|i| i.unwrap()).collect();
+    let lines: Vec<String> = BufReader::new(file).lines().map(
+        |line| line.unwrap()
+    ).collect();
     
     let mut fabric = HashMap::<String, isize>::new();
     let mut overlapping = HashMap::<isize, bool>::new();
@@ -35,12 +37,12 @@ pub fn run(_part: usize, filename: String) {
     }
     
     let thing: Vec<_> = fabric.iter().filter(
-        |&i| { let (_, v) = i; *v < 0 }
+        |&cell| { let (_, id) = cell; *id < 0 }
     ).collect();
     println!("overlapped squares: {}", thing.len());
     
     let (id, _) = overlapping.iter().find(
-        |&i| { let (_, v) = i; *v == false }
+        |&fabric| { let (_, is_over) = fabric; *is_over == false }
     ).unwrap();
     println!("unoverlapped patch id: {}", id);
 }
@@ -59,12 +61,12 @@ fn parse_patch(line: String) -> Patch {
     let regex = Regex::new(r"^#(\d+) @ (\d+),(\d+): (\d+)x(\d+)$").unwrap();
 
     regex.captures(line.as_str()).and_then(
-        |f| Some((
-            f.get(1).unwrap().as_str().parse::<isize>().unwrap(),
-            f.get(2).unwrap().as_str().parse::<usize>().unwrap(),
-            f.get(3).unwrap().as_str().parse::<usize>().unwrap(),
-            f.get(4).unwrap().as_str().parse::<usize>().unwrap(),
-            f.get(5).unwrap().as_str().parse::<usize>().unwrap(),
+        |cap| Some((
+            cap.get(1).unwrap().as_str().parse::<isize>().unwrap(),
+            cap.get(2).unwrap().as_str().parse::<usize>().unwrap(),
+            cap.get(3).unwrap().as_str().parse::<usize>().unwrap(),
+            cap.get(4).unwrap().as_str().parse::<usize>().unwrap(),
+            cap.get(5).unwrap().as_str().parse::<usize>().unwrap(),
         ))
     ).unwrap()
 }
