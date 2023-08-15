@@ -3,11 +3,11 @@ use super::nap::Nap;
 use core::fmt::Debug;
 
 pub struct Guard {
-    id: usize,
+    pub id: usize,
     pub events: Vec<Event>,
     naps: Vec<Nap>,
-    total_sleep: usize,
-    sleepiest_minute: (usize, usize),
+    pub total_sleep: usize,
+    pub sleepiest_minute: (usize, usize),
 }
 
 impl Debug for Guard {

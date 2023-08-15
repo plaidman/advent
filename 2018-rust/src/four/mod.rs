@@ -32,5 +32,27 @@ pub fn run(_part: usize, filename: String) {
         guard.populate_days();
         guard.find_sleepiest_minute();
     }
-    println!("{:#?}", guards);
+    
+    // part one
+    let mut sleepiest_guard = &Guard::new(0);
+    for (_, guard) in guards.iter() {
+        if sleepiest_guard.total_sleep < guard.total_sleep {
+            sleepiest_guard = guard;
+        }
+    }
+    let (minute, _) = sleepiest_guard.sleepiest_minute;
+    println!("part one: {}", minute * sleepiest_guard.id);
+
+    // part two
+    let mut sleepiest_guard = &Guard::new(0);
+    for (_, guard) in guards.iter() {
+        let (_, days) = guard.sleepiest_minute;
+        let (_, sl_days) = sleepiest_guard.sleepiest_minute;
+
+        if sl_days < days {
+            sleepiest_guard = guard;
+        }
+    }
+    let (minute, _) = sleepiest_guard.sleepiest_minute;
+    println!("part two: {}", minute * sleepiest_guard.id);
 }
