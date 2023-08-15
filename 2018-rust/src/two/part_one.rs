@@ -7,7 +7,7 @@ pub fn run(lines: Vec<Vec<char>>) {
     for line in lines {
         let letters = count_letters(line);
         let (has_two, has_three) = count_twos_threes(letters);
-        
+
         if has_two {
             num_twos += 1;
         }
@@ -16,19 +16,19 @@ pub fn run(lines: Vec<Vec<char>>) {
             num_threes += 1;
         }
     }
-    
+
     println!("checksum: {}", num_twos * num_threes);
 }
 
 fn count_letters(line: Vec<char>) -> HashMap<char, usize> {
     let mut letters = HashMap::<char, usize>::new();
-    
+
     for letter in line {
         let mut count: usize = *letters.get(&letter).unwrap_or(&0);
         count += 1;
         letters.insert(letter, count);
     }
-    
+
     letters
 }
 

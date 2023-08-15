@@ -2,20 +2,24 @@ mod event;
 mod guard;
 mod nap;
 
-use std::{ io::{BufReader, BufRead }, fs::File };
-use std::collections::HashMap;
 use event::Event;
 use guard::Guard;
+use std::collections::HashMap;
+use std::{
+    fs::File,
+    io::{BufRead, BufReader},
+};
 
 pub fn run(_part: usize, filename: String) {
     let file = File::open(filename).expect("failed to open file");
-    let mut events: Vec<Event> = BufReader::new(file).lines().map(
-        |line| line.unwrap().parse::<Event>().unwrap()
-    ).collect();
+    let mut events: Vec<Event> = BufReader::new(file)
+        .lines()
+        .map(|line| line.unwrap().parse::<Event>().unwrap())
+        .collect();
 
     events.sort();
     // println!("{:#?}", events);
-    
+
     let mut guards = HashMap::<usize, Guard>::new();
     let mut cur_guard = &mut Guard::new(0);
 
@@ -23,7 +27,7 @@ pub fn run(_part: usize, filename: String) {
         if event.guard_id.is_some() {
             let guard_id = event.guard_id.unwrap();
             cur_guard = guards.entry(guard_id).or_insert(Guard::new(guard_id));
-        } else  {
+        } else {
             cur_guard.events.push(event);
         }
     }
@@ -32,7 +36,7 @@ pub fn run(_part: usize, filename: String) {
         guard.populate_days();
         guard.find_sleepiest_minute();
     }
-    
+
     // part one
     let mut sleepiest_guard = &Guard::new(0);
     for (_, guard) in guards.iter() {
