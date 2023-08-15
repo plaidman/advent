@@ -14,15 +14,15 @@ pub struct Event {
     pub guard_id: Option<usize>,
 }
 
-impl Event {
-    pub fn get_day_stamp(&self) -> usize {
-        self.month * 100 + self.day
-    }
-}
-
 impl Debug for Event {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "on {}/{} at {}:{}, {:?}", self.month, self.day, self.hour, self.minute, self.guard_id)
+        write!(f, "on {}/{} at {}:{}", self.month, self.day, self.hour, self.minute)?;
+
+        if self.guard_id.is_some() {
+            write!(f, "  (guard {})", self.guard_id.unwrap())?;
+        }
+        
+        Ok(())
     }
 }
 

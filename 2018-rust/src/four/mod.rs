@@ -30,6 +30,7 @@ pub fn run(_part: usize, filename: String) {
 
     for (_, guard) in guards.iter_mut() {
         guard.populate_days();
+        guard.find_sleepiest_minute();
     }
     println!("{:#?}", guards);
 }

@@ -3,7 +3,7 @@ use core::fmt::Debug;
 pub struct Nap {
     start_min: usize,
     end_min: usize,
-    diff: usize,
+    pub diff: usize,
 }
 
 impl Debug for Nap {
@@ -15,5 +15,9 @@ impl Debug for Nap {
 impl Nap {
     pub fn new(start_min: usize, end_min: usize) -> Nap {
         Nap { start_min, end_min, diff: end_min - start_min }
+    }
+    
+    pub fn is_asleep_at(&self, minute: usize) -> bool {
+        return minute >= self.start_min && minute < self.end_min;
     }
 }
