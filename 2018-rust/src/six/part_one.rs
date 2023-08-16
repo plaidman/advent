@@ -1,25 +1,16 @@
 use super::Coord;
 
 pub fn run(mut coords: Vec<Coord>) {
+    // calculate bounds of grid
     let mut top = 1000;
     let mut bottom = 0;
     let mut left = 1000;
     let mut right = 0;
-
-    // calculate bounds of grid
     for coord in coords.iter() {
-        if coord.y < top {
-            top = coord.y
-        }
-        if coord.y > bottom {
-            bottom = coord.y
-        }
-        if coord.x < left {
-            left = coord.x
-        }
-        if coord.x > right {
-            right = coord.x
-        }
+        top = top.min(coord.y);
+        bottom = bottom.max(coord.y);
+        left = left.min(coord.x);
+        right = right.max(coord.x);
     }
 
     // adjust coords to make grid smaller
@@ -53,7 +44,7 @@ pub fn run(mut coords: Vec<Coord>) {
         .filter(|c| c.is_edge == false)
         .reduce(|x, y| if x.area > y.area { x } else { y })
         .unwrap();
-    println!("{:#?}", largest);
+    println!("largest non-infinite area: {:#?}", largest.area);
 }
 
 fn find_closest_index(x: usize, y: usize, coords: &Vec<Coord>) -> Option<usize> {
