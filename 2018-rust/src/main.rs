@@ -15,7 +15,7 @@ fn main() {
         (two::run, "two"),
         (three::run, "three"),
         (four::run, "four"),
-        (four::run, "five"),
+        (five::run, "five"),
     ];
 
     let args: Vec<String> = env::args().collect();
