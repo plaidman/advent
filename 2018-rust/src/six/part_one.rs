@@ -1,4 +1,4 @@
-use super::Coord;
+use super::coord::Coord;
 
 pub fn run(mut coords: Vec<Coord>) {
     // calculate bounds of grid

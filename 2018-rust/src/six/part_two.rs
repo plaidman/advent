@@ -1,4 +1,4 @@
-use super::Coord;
+use super::coord::Coord;
 
 pub fn run(mut coords: Vec<Coord>) {
     // USE 32 HERE FOR TEST DATA
