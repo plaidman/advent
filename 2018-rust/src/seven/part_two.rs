@@ -4,9 +4,17 @@ use super::worker::Worker;
 const IS_TEST: bool = false;
 
 /*
- * for some reason this code produces the right answer for the test input but it's off by one for the real input.
- * my code finishes a worker then tries to start a new task immediately.
- * I wonder if the intent is to have all workers finish then all workers try to pick up a task in turn.
+ * note: the description on this task is a little bit ambiguous.
+ *
+ * the previous commit code would loop through the workers, and pick up a new task immediately
+ *   after the previous task was finished, then check the next worker
+ * this would produce an answer that was one greater than the correct answer
+ *
+ * this code below produces the correct answer by finishing all workers in a loop,
+ *   then pick up new tasks in a different loop
+ *
+ * the difference is subtle - test input is correct either way,
+ *   but real input is incorrect with the previous commit's code.
  */
 
 pub fn run(lines: Vec<String>) {
@@ -47,8 +55,10 @@ pub fn run(lines: Vec<String>) {
 
                 println!("  worker finished task {}", worker.current);
             }
+        }
 
-            worker.pick_up_new_task(&mut manual, step_padding);
+        for worker in workers.iter_mut() {
+            worker.pick_up_new_task(&mut manual, step_padding)
         }
 
         if manual.all_done() {
