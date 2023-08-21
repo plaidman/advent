@@ -1,4 +1,5 @@
 use super::step::Step;
+use regex_lite::Regex;
 use std::collections::HashMap;
 
 pub struct Manual {
@@ -14,5 +15,51 @@ impl Manual {
 
     pub fn get_step_mut_or_insert(&mut self, letter: char) -> &mut Step {
         self.step_list.entry(letter).or_insert(Step::new(letter))
+    }
+
+    pub fn parse_line(&mut self, line: String) {
+        let regex =
+            Regex::new(r"Step ([A-Z]) must be finished before step ([A-Z]) can begin.").unwrap();
+        let (parent, child) = regex
+            .captures(&line)
+            .and_then(|cap| {
+                Some((
+                    cap.get(1).unwrap().as_str().chars().next().unwrap(),
+                    cap.get(2).unwrap().as_str().chars().next().unwrap(),
+                ))
+            })
+            .unwrap();
+
+        let parent_step = self.get_step_mut_or_insert(parent);
+        parent_step.children.push(child);
+
+        let child_step = self.get_step_mut_or_insert(child);
+        child_step.parents.push(parent);
+    }
+
+    pub fn find_earliest_ready(&self) -> Option<char> {
+        let item = self
+            .step_list
+            .iter()
+            .filter(|(_letter, step)| step.is_ready())
+            .reduce(|(first_letter, first_step), (second_letter, second_step)| {
+                if first_letter < second_letter {
+                    (first_letter, first_step)
+                } else {
+                    (second_letter, second_step)
+                }
+            });
+
+        if item.is_none() {
+            return None;
+        }
+
+        let (letter, _step) = item.unwrap();
+        Some(*letter)
+    }
+
+    pub fn complete_step_and_get_children(&mut self, letter: char) -> Vec<char> {
+        let step = self.get_step_mut_or_insert(letter);
+        step.complete_step_and_get_children()
     }
 }
