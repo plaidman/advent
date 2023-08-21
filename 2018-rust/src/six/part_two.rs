@@ -1,8 +1,9 @@
 use super::coord::Coord;
 
+const IS_TEST: bool = true;
+
 pub fn run(mut coords: Vec<Coord>) {
-    // USE 32 HERE FOR TEST DATA
-    let max_dist = 10000;
+    let max_dist = if IS_TEST { 32 } else { 10000 };
 
     // calculate bounds of grid
     let mut top = 1000;

@@ -37,12 +37,23 @@ impl Manual {
         child_step.parents.push(parent);
     }
 
+    pub fn all_done(&self) -> bool {
+        self.step_list
+            .iter()
+            .filter(|(_, step)| step.finished == false)
+            .count()
+            == 0
+    }
+
     pub fn find_earliest_ready(&self) -> Option<char> {
         let item = self
             .step_list
             .iter()
-            .filter(|(_letter, step)| step.is_ready())
-            .reduce(|(first_letter, first_step), (second_letter, second_step)| {
+            .filter(|(_, step)| step.is_ready())
+            .reduce(|first, second| {
+                let (first_letter, first_step) = first;
+                let (second_letter, second_step) = second;
+
                 if first_letter < second_letter {
                     (first_letter, first_step)
                 } else {
@@ -56,10 +67,5 @@ impl Manual {
 
         let (letter, _step) = item.unwrap();
         Some(*letter)
-    }
-
-    pub fn complete_step_and_get_children(&mut self, letter: char) -> Vec<char> {
-        let step = self.get_step_mut_or_insert(letter);
-        step.complete_step_and_get_children()
     }
 }

@@ -2,6 +2,7 @@ mod manual;
 mod part_one;
 mod part_two;
 mod step;
+mod worker;
 
 use std::{
     fs::File,

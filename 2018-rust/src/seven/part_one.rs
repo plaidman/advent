@@ -8,23 +8,20 @@ pub fn run(lines: Vec<String>) {
     }
 
     loop {
-        // for (_, step) in manual.step_list.iter() {
-        //     println!("{:?}", step);
-        // }
-
-        let letter_opt = manual.find_earliest_ready();
-
-        if letter_opt == None {
+        if manual.all_done() {
             break;
         }
 
-        let letter = letter_opt.unwrap();
+        let letter = manual.find_earliest_ready().unwrap();
         letters.push(letter);
-        let children = manual.complete_step_and_get_children(letter);
+
+        let step = manual.get_step_mut_or_insert(letter);
+        step.start();
+        let children = step.finish_and_get_children();
 
         for child in children {
-            let step = manual.get_step_mut_or_insert(child);
-            step.remove_parent(letter);
+            let child_step = manual.get_step_mut_or_insert(child);
+            child_step.remove_parent(letter);
         }
     }
 

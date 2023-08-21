@@ -4,7 +4,8 @@ pub struct Step {
     letter: char,
     pub children: Vec<char>,
     pub parents: Vec<char>,
-    finished: bool,
+    started: bool,
+    pub finished: bool,
 }
 
 impl Step {
@@ -13,12 +14,22 @@ impl Step {
             letter,
             children: Vec::new(),
             parents: Vec::new(),
+            started: false,
             finished: false,
         }
     }
 
     pub fn is_ready(&self) -> bool {
-        self.parents.is_empty() && self.finished == false
+        self.parents.is_empty() && self.started == false
+    }
+
+    pub fn start(&mut self) {
+        self.started = true;
+    }
+
+    pub fn finish_and_get_children(&mut self) -> Vec<char> {
+        self.finished = true;
+        self.children.clone()
     }
 
     pub fn remove_parent(&mut self, letter: char) {
@@ -29,11 +40,6 @@ impl Step {
             .map(|parent| parent.clone())
             .collect();
     }
-
-    pub fn complete_step_and_get_children(&mut self) -> Vec<char> {
-        self.finished = true;
-        self.children.iter().map(|i| i.clone()).collect()
-    }
 }
 
 impl Debug for Step {
@@ -42,10 +48,12 @@ impl Debug for Step {
 
         if self.finished {
             write!(f, " (finished)")?;
+        } else if self.started {
+            write!(f, " (started)")?;
         }
 
-        writeln!(f, "\n  depends on {:?}", self.parents)?;
-        writeln!(f, "  dependent of {:?}", self.children)?;
+        writeln!(f, "\n  child of {:?}", self.parents)?;
+        writeln!(f, "  parent of {:?}", self.children)?;
 
         Ok(())
     }
