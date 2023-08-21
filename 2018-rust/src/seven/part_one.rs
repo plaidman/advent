@@ -1,12 +1,12 @@
 use super::manual::Manual;
+
 pub fn run(lines: Vec<String>) {
     let mut manual = Manual::new();
-    let mut letters = Vec::<char>::new();
-
     for line in lines {
         manual.parse_line(line);
     }
 
+    let mut letters = Vec::<char>::new();
     loop {
         if manual.all_done() {
             break;

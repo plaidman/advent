@@ -1,6 +1,6 @@
 use super::coord::Coord;
 
-const IS_TEST: bool = true;
+const IS_TEST: bool = false;
 
 pub fn run(mut coords: Vec<Coord>) {
     let max_dist = if IS_TEST { 32 } else { 10000 };

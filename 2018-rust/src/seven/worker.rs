@@ -1,5 +1,7 @@
+use super::manual::Manual;
+
 pub struct Worker {
-    current: char,
+    pub current: char,
     remaining: u32,
     pub working: bool,
 }
@@ -34,5 +36,24 @@ impl Worker {
         self.current = letter;
         self.remaining = &letter.into() - ord_a + padding + 1;
         self.working = true;
+    }
+
+    pub fn pick_up_new_task(&mut self, manual: &mut Manual, step_padding: u32) {
+        if self.working {
+            return;
+        }
+
+        let ready_step_opt = manual.find_earliest_ready();
+        if ready_step_opt == None {
+            return;
+        }
+
+        let ready_step_letter = ready_step_opt.unwrap();
+        let ready_step = manual.get_step_mut_or_insert(ready_step_letter);
+
+        ready_step.start();
+        self.start_task(ready_step_letter, step_padding);
+
+        println!("  worker picked up task {}", ready_step_letter);
     }
 }
