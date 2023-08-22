@@ -27,7 +27,7 @@ pub fn run(_part: usize, filename: String) {
                 let coord = coord_stringify(x, y);
 
                 if fabric.contains_key(&coord) {
-                    let other_id = *fabric.get(&coord).unwrap();
+                    let other_id = fabric[&coord];
 
                     overlapping.insert(id, true);
                     overlapping.insert(other_id, true);
@@ -60,13 +60,7 @@ pub fn run(_part: usize, filename: String) {
 }
 
 fn coord_stringify(x: usize, y: usize) -> String {
-    let mut coord = String::new();
-
-    coord.push_str(x.to_string().as_str());
-    coord.push(',');
-    coord.push_str(y.to_string().as_str());
-
-    coord
+    format!("{},{}", x, y)
 }
 
 fn parse_patch(line: String) -> Patch {
@@ -76,11 +70,11 @@ fn parse_patch(line: String) -> Patch {
         .captures(line.as_str())
         .and_then(|cap| {
             Some((
-                cap.get(1).unwrap().as_str().parse::<isize>().unwrap(),
-                cap.get(2).unwrap().as_str().parse::<usize>().unwrap(),
-                cap.get(3).unwrap().as_str().parse::<usize>().unwrap(),
-                cap.get(4).unwrap().as_str().parse::<usize>().unwrap(),
-                cap.get(5).unwrap().as_str().parse::<usize>().unwrap(),
+                cap[1].parse::<isize>().unwrap(),
+                cap[2].parse::<usize>().unwrap(),
+                cap[3].parse::<usize>().unwrap(),
+                cap[4].parse::<usize>().unwrap(),
+                cap[5].parse::<usize>().unwrap(),
             ))
         })
         .unwrap()

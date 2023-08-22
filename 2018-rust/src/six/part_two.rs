@@ -31,7 +31,7 @@ pub fn run(mut coords: Vec<Coord>) {
             let mut sum_dist = 0;
 
             for i in 0..coords.len() {
-                sum_dist += coords.get(i).unwrap().dist(x, y);
+                sum_dist += coords[i].dist(x, y);
             }
 
             if sum_dist < max_dist {

@@ -53,8 +53,7 @@ fn find_closest_index(x: usize, y: usize, coords: &Vec<Coord>) -> Option<usize> 
     let mut is_tied = false;
 
     for i in 0..coords.len() {
-        let coord = coords.get(i).unwrap();
-        let cur_dist = coord.dist(x, y);
+        let cur_dist = coords[i].dist(x, y);
 
         if cur_dist == dist {
             is_tied = true;

@@ -1,3 +1,4 @@
+mod eight;
 mod five;
 mod four;
 mod one;
@@ -20,6 +21,7 @@ fn main() {
         (five::run, "five"),
         (six::run, "six"),
         (seven::run, "seven"),
+        (eight::run, "eight"),
     ];
 
     let args: Vec<String> = env::args().collect();
@@ -40,9 +42,9 @@ fn main() {
         .captures(&arg_string)
         .and_then(|cap| {
             Some((
-                cap.get(1).unwrap().as_str().parse::<usize>().unwrap(),
-                cap.get(2).unwrap().as_str().parse::<usize>().unwrap(),
-                cap.get(3).unwrap().as_str().parse::<String>().unwrap(),
+                cap[1].parse::<usize>().unwrap(),
+                cap[2].parse::<usize>().unwrap(),
+                cap[3].parse::<String>().unwrap(),
             ))
         })
         .unwrap();

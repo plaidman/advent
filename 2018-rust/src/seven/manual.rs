@@ -24,8 +24,8 @@ impl Manual {
             .captures(&line)
             .and_then(|cap| {
                 Some((
-                    cap.get(1).unwrap().as_str().chars().next().unwrap(),
-                    cap.get(2).unwrap().as_str().chars().next().unwrap(),
+                    cap[1].chars().nth(0).unwrap(),
+                    cap[2].chars().nth(0).unwrap(),
                 ))
             })
             .unwrap();

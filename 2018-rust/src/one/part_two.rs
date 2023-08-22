@@ -6,8 +6,7 @@ pub fn run(lines: Vec<String>) {
     let mut current = 0;
 
     loop {
-        let line = lines.get(current).unwrap().parse::<i32>().unwrap();
-        sum += line;
+        sum += lines[current].parse::<i32>().unwrap();
 
         if tracker.contains_key(&sum) {
             break;

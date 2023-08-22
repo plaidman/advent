@@ -39,10 +39,10 @@ impl FromStr for Event {
             .captures(line)
             .and_then(|cap| {
                 Some((
-                    cap.get(1).unwrap().as_str().parse::<usize>().unwrap(),
-                    cap.get(2).unwrap().as_str().parse::<usize>().unwrap(),
-                    cap.get(3).unwrap().as_str().parse::<usize>().unwrap(),
-                    cap.get(4).unwrap().as_str().parse::<usize>().unwrap(),
+                    cap[1].parse::<usize>().unwrap(),
+                    cap[2].parse::<usize>().unwrap(),
+                    cap[3].parse::<usize>().unwrap(),
+                    cap[4].parse::<usize>().unwrap(),
                     cap.get(5).unwrap().as_str(),
                 ))
             })
@@ -51,7 +51,7 @@ impl FromStr for Event {
         let desc_regex = Regex::new(r"Guard #(\d+) begins shift").unwrap();
         let guard_id = desc_regex
             .captures(desc)
-            .and_then(|cap| Some(cap.get(1).unwrap().as_str().parse::<usize>().unwrap()));
+            .and_then(|cap| Some(cap[1].parse::<usize>().unwrap()));
 
         return Ok(Event {
             guard_id,

@@ -37,8 +37,8 @@ impl FromStr for Coord {
             .captures(line)
             .and_then(|cap| {
                 Some((
-                    cap.get(1).unwrap().as_str().parse::<usize>().unwrap(),
-                    cap.get(2).unwrap().as_str().parse::<usize>().unwrap(),
+                    cap[1].parse::<usize>().unwrap(),
+                    cap[2].parse::<usize>().unwrap(),
                 ))
             })
             .ok_or(CoordParseError)?;
