@@ -43,8 +43,8 @@ pub fn run(_part: usize, filename: String) {
     let thing: Vec<_> = fabric
         .iter()
         .filter(|&cell| {
-            let (_, id) = cell;
-            *id < 0
+            let (_, &id) = cell;
+            id < 0
         })
         .collect();
     println!("overlapped squares: {}", thing.len());
@@ -52,8 +52,8 @@ pub fn run(_part: usize, filename: String) {
     let (id, _) = overlapping
         .iter()
         .find(|&fabric| {
-            let (_, is_over) = fabric;
-            *is_over == false
+            let (_, &is_over) = fabric;
+            is_over == false
         })
         .unwrap();
     println!("unoverlapped patch id: {}", id);
