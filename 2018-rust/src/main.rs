@@ -1,6 +1,7 @@
 mod eight;
 mod five;
 mod four;
+mod nine;
 mod one;
 mod seven;
 mod six;
@@ -22,6 +23,7 @@ fn main() {
         (six::run, "six"),
         (seven::run, "seven"),
         (eight::run, "eight"),
+        (nine::run, "nine"),
     ];
 
     let args: Vec<String> = env::args().collect();
