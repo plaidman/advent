@@ -24,9 +24,16 @@ func main() {
 
 	day, part, file := parseArgs()
 
-	if day > len(days) {
+	if day > len(days) || day < 1 {
 		fmt.Println("usage: cargo run <day.part> <input>")
-		fmt.Printf("  <day> cannot be greater than %d\n", len(days))
+		fmt.Printf("  <day> must be between 1 and %d inclusive\n", len(days))
+
+		os.Exit(0)
+	}
+
+	if part > 2 || part < 1 {
+		fmt.Println("usage: cargo run <day.part> <input>")
+		fmt.Println("  <part> must be either 1 or 2")
 
 		os.Exit(0)
 	}
@@ -38,9 +45,10 @@ func main() {
 
 func parseArgs() (int, int, string) {
 	args := strings.Join(os.Args, " ")
-	pattern := regexp.MustCompile(`.* (\\d)\\.([12]) (.*)`)
-	matches := pattern.FindStringSubmatch(args)
 
+	pattern := regexp.MustCompile(`.* (\d)\.([12]) (.*)`)
+
+	matches := pattern.FindStringSubmatch(args)
 	if matches == nil {
 		fmt.Println("usage: cargo run <day.part> <input>")
 		fmt.Println("  <day> must be an integer")
