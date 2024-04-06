@@ -21,7 +21,7 @@ func RunPartTwo(scanner *bufio.Scanner) {
 	parser := NewLineParser(digits)
 	acc := NewSumAccumulator(parser.Out)
 
-	acc.WaitForLines()
+	acc.WaitForData()
 
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
@@ -31,5 +31,5 @@ func RunPartTwo(scanner *bufio.Scanner) {
 
 	parser.WaitForClose()
 
-	fmt.Println("calibration sum: ", <-acc.SumOut)
+	fmt.Println("calibration sum: ", <-acc.Out)
 }
