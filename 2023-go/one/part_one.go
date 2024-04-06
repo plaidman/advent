@@ -8,13 +8,12 @@ import (
 // scanning and processing at the same time byte by byte
 // this won't work for the 2nd part, since we need to look for multiple byte words
 func RunPartOne(scanner *bufio.Scanner) {
-	scanner.Split(bufio.ScanBytes)
-
 	digit := -1
 	foundFirst := false
 	total := 0
 	var char byte
 
+	scanner.Split(bufio.ScanBytes)
 	for scanner.Scan() {
 		char = scanner.Bytes()[0]
 

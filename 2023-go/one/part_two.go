@@ -6,6 +6,12 @@ import (
 )
 
 func RunPartTwo(scanner *bufio.Scanner) {
+	// NOTE: part one can be solved by only including the digits here
+	//  the other implementation is interesting enough that I wanted to keep it
+	//  also the old implementation is ~11x faster
+	//  old: ~200µs
+	//  new: ~2.2ms
+
 	var digits = map[string]int{
 		"1": 1, "one": 1,
 		"2": 2, "two": 2,
