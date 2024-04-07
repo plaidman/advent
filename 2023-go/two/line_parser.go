@@ -53,7 +53,7 @@ func (p *BagParser) parseLine(line string) {
 }
 
 func (p *BagParser) extractColor(line string, color string, out chan int) {
-	pattern := regexp.MustCompile(fmt.Sprint("(\\d+) ", color))
+	pattern := regexp.MustCompile(fmt.Sprint(`(\d+) `, color))
 	matches := pattern.FindAllStringSubmatch(line, -1)
 	maxNum := 0
 
@@ -66,7 +66,7 @@ func (p *BagParser) extractColor(line string, color string, out chan int) {
 }
 
 func (p *BagParser) extractId(line string) (int, string) {
-	pattern := regexp.MustCompile("^Game (\\d+): (.*)")
+	pattern := regexp.MustCompile(`^Game (\d+): (.*)`)
 	matches := pattern.FindStringSubmatch(line)
 
 	id, _ := strconv.Atoi(matches[1])
