@@ -5,11 +5,13 @@ import (
 	"os"
 
 	"2023-go/three/one"
+	"2023-go/three/two"
 )
 
 func RunDay(part int, filename string) {
 	parts := []func(*bufio.Scanner){
-		one.RunPartOne,
+		one.RunPart,
+		two.RunPart,
 	}
 
 	file, _ := os.Open(filename)

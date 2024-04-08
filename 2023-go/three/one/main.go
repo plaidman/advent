@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func RunPartOne(scanner *bufio.Scanner) {
+func RunPart(scanner *bufio.Scanner) {
 	schem := NewSchematic()
 	parser := NewParser(schem)
 	verifier := NewVerifier(schem, parser.Out)
