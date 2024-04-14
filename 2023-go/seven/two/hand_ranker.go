@@ -1,4 +1,4 @@
-package one
+package two
 
 func NewHandRanker(in chan Hand) chan Hand {
 	return NewPipelineStep(in, rankHand)
@@ -9,6 +9,10 @@ func rankHand(in Hand) Hand {
 
 	for _, card := range in.cards {
 		uniqueCards[card]++
+	}
+
+	if uniqueCards[1] > 0 {
+		uniqueCards = applyJokers(uniqueCards)
 	}
 
 	switch len(uniqueCards) {
@@ -25,6 +29,24 @@ func rankHand(in Hand) Hand {
 	}
 
 	return in
+}
+
+func applyJokers(uniqueCards map[int]int) map[int]int {
+	numJokers := uniqueCards[1]
+	delete(uniqueCards, 1)
+
+	mostCard := 0
+	mostQty := 0
+	for card, qty := range uniqueCards {
+		if mostQty < qty {
+			mostCard = card
+			mostQty = qty
+		}
+	}
+
+	uniqueCards[mostCard] += numJokers
+
+	return uniqueCards
 }
 
 func rankTwo(cards map[int]int) int {
