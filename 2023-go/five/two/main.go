@@ -9,7 +9,7 @@ import (
 
 type SeedRange struct {
 	start int
-	end int
+	end   int
 }
 
 func RunPart(scanner *bufio.Scanner) {
@@ -26,13 +26,13 @@ func RunPart(scanner *bufio.Scanner) {
 		seed := findSeed(i, allSteps)
 		inRange = inSeedRanges(seed, seedRanges)
 
-		if i % 10000000 == 0 {
+		if i%10000000 == 0 {
 			fmt.Println(i)
 		}
 
 		if inRange {
 			fmt.Println("lowest location:", i)
-			break;
+			break
 		}
 	}
 }
@@ -96,4 +96,3 @@ func findSeed(location int, allSteps []ProductionStep) int {
 	soil := allSteps[1].mapNumber(fertilizer)
 	return allSteps[0].mapNumber(soil)
 }
-
