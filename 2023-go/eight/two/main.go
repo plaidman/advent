@@ -36,7 +36,7 @@ func RunPart(scanner *bufio.Scanner) {
 	}
 	close(startNodeChan)
 
-	fmt.Println(<-lcmChan)
+	fmt.Println("they meet up at step", <-lcmChan)
 }
 
 func parsePath(pathLine string) []int {

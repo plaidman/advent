@@ -15,6 +15,7 @@ import (
 	"2023-go/six"
 	"2023-go/seven"
 	"2023-go/eight"
+	"2023-go/nine"
 )
 
 type day struct {
@@ -32,6 +33,7 @@ func main() {
 		{"six", six.RunDay},
 		{"seven", seven.RunDay},
 		{"eight", eight.RunDay},
+		{"nine", nine.RunDay},
 	}
 
 	day, part, file := parseArgs()
