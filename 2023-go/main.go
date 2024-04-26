@@ -16,6 +16,7 @@ import (
 	"2023-go/seven"
 	"2023-go/eight"
 	"2023-go/nine"
+	"2023-go/ten"
 )
 
 type day struct {
@@ -34,6 +35,7 @@ func main() {
 		{"seven", seven.RunDay},
 		{"eight", eight.RunDay},
 		{"nine", nine.RunDay},
+		{"ten", ten.RunDay},
 	}
 
 	day, part, file := parseArgs()
@@ -60,7 +62,7 @@ func main() {
 func parseArgs() (int, int, string) {
 	args := strings.Join(os.Args, " ")
 
-	pattern := regexp.MustCompile(`.* (\d)\.([12]) (.*)`)
+	pattern := regexp.MustCompile(`.* (\d+)\.([12]) (.*)`)
 
 	matches := pattern.FindStringSubmatch(args)
 	if matches == nil {
